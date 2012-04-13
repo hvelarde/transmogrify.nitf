@@ -13,6 +13,13 @@
      configuration="migrator.cfg"
      />
 
+  <transmogrifier:registerConfig
+     name="nitfxmlimport"
+     title="Import XML files into NITF objects"
+     description="Create NITF objects from XML files"
+     configuration="xmlimport.cfg"
+     />
+
   <utility
      component="transmogrify.nitf.migrator.NewsItemSource"
      name="transmogrify.nitf.migrator.newsitemsource"
