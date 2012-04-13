@@ -23,7 +23,7 @@ from collective.transmogrifier.interfaces import ISection, ISectionBlueprint
 from collective.transmogrifier.transmogrifier import Transmogrifier
 
 from collective.nitf.content import INITF
-from collective.nitf.content import kind_default_value
+from collective.nitf.content import genre_default_value
 from collective.nitf.content import section_default_value
 from collective.nitf.content import urgency_default_value
 
@@ -111,7 +111,7 @@ class SchemaUpdater(object):
             #obj.abstract = item['description']
             obj.byline = ''
             obj.text = RichTextValue(item['text'], 'text/html', 'text/x-html-safe')
-            obj.kind = kind_default_value(None)
+            obj.genre = genre_default_value(None)
             obj.section = section_default_value(None)
             obj.urgency = urgency_default_value(None)
 
