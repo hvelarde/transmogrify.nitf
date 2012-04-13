@@ -26,12 +26,13 @@ def get_text(dom, subelemet, attribute=None):
 
 
 def get_date_path(dom, subelemet, attribute):
-    """ Return a path ibased on a date value normalized into ISO8601
+    """ Return a path 'YYYY/MM/DD' based on a date value normalized into
+        ISO-8601
         Note: Only work with the basic format.
     """
-    text =  get_text(dom, subelemet, attribute)
+    text = get_text(dom, subelemet, attribute)
     # We only need the YYYYMMDD part from the string
-    date = 
+    return "/".join([text[:4], text[4:6], text[6:8]])
 
 
 class XMLSource(object):
@@ -45,8 +46,6 @@ class XMLSource(object):
 
     def __iter__(self):
         for data in self.previous:
-            images = []
-            videos = []
             item = {'id': '',
                     'path': '',
                     'title': '',
@@ -57,7 +56,10 @@ class XMLSource(object):
                     'genre': '',
                     'section': '',
                     'urgency': '',
-                    'location': ''}
+                    'location': '',
+                    'media': {'image': [],
+                              'video': []}
+                    }
 
             dom = etree.fromstring(data)
             head = dom.find('head')
@@ -70,25 +72,22 @@ class XMLSource(object):
                                            'tobject.property.type')
             item['section'] = get_text(head, 'pubdata', 'position.section')
             item['urgency'] = get_text(head, 'docdata/urgency', 'ed-urg')
-            item['location'] = ", ".join([
-                get_text(head, 'docdata/evloc', 'city'),
-                get_text(head, 'docdata/evloc', 'state-prov'),
-                get_text(head, 'docdata/evloc', 'iso-cc')])
 
+            item['location'] = get_text(body, 'body.head/dateline/location')
             item['subtitle'] = get_text(body, 'body.head/hedline/hl2')
             item['description'] = get_text(body, 'body.head/abstract')
             item['byline'] = get_text(body, 'body.head/byline/person')
 
             for elem in list(body.find('body.content')):
-                if elem.tag == 'media':
+                if elem.tag == 'media' and elem.get('media-type') == 'image':
                     image = dict(elem.find('media-reference'))
-                    image['alt'] = get_text(elem, 'media-caption')
-                    images.append(image)
+                    image['media-caption'] = get_text(elem, 'media-caption')
+                    item['media']['image'].append(image)
 
-                elif elem.tag == 'video':
+                elif elem.tag == 'media' and elem.get('media-type') == 'video':
                     video = dict(elem.find('media-reference'))
-                    video['alt'] = get_text(elem, 'media-caption')
-                    videos.append(video)
+                    video['media-caption'] = get_text(elem, 'media-caption')
+                    item['media']['video'].append(video)
 
                 else:   # other tag are considered part of the body text and
                         # should be preserved.
