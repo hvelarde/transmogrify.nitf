@@ -20,6 +20,14 @@
      configuration="xmlimport.cfg"
      />
 
+
+  <!-- common utilities -->
+  <utility
+     component="transmogrify.nitf.import.DirectorySource"
+     name="transmogrify.nitf.import.sourcedirectory"
+     />
+
+  <!-- migrator utilities -->
   <utility
      component="transmogrify.nitf.migrator.NewsItemSource"
      name="transmogrify.nitf.migrator.newsitemsource"
@@ -43,6 +51,12 @@
   <utility
      component="transmogrify.nitf.migrator.PrettyPrinter"
      name="transmogrify.nitf.migrator.pprinter"
+     />
+
+  <!-- xml import utilities -->
+  <utility
+     component="transmogrify.nitf.xmlsource.XMLSource"
+     name="transmogrify.nitf.xmlsource.xmlprocessor"
      />
 
 </configure>
