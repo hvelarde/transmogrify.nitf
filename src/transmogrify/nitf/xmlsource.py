@@ -47,6 +47,7 @@ class XMLSource(object):
     def __iter__(self):
         for data in self.previous:
             item = {'id': '',
+                    '_type': 'collective.nitf.content',
                     'path': '',
                     'title': '',
                     'subtitle': '',
@@ -80,12 +81,12 @@ class XMLSource(object):
 
             for elem in list(body.find('body.content')):
                 if elem.tag == 'media' and elem.get('media-type') == 'image':
-                    image = dict(elem.find('media-reference'))
+                    image = elem.find('media-reference').attrib
                     image['media-caption'] = get_text(elem, 'media-caption')
                     item['media']['image'].append(image)
 
                 elif elem.tag == 'media' and elem.get('media-type') == 'video':
-                    video = dict(elem.find('media-reference'))
+                    video = elem.find('media-reference').attrib
                     video['media-caption'] = get_text(elem, 'media-caption')
                     item['media']['video'].append(video)
 
