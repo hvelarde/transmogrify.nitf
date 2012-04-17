@@ -58,8 +58,8 @@ class XMLSource(object):
                     'section': '',
                     'urgency': '',
                     'location': '',
-                    'media': {'image': [],
-                              'video': []}
+                    'media': {'images': [],
+                              'videos': []}
                     }
 
             dom = etree.fromstring(data)
@@ -83,12 +83,12 @@ class XMLSource(object):
                 if elem.tag == 'media' and elem.get('media-type') == 'image':
                     image = elem.find('media-reference').attrib
                     image['media-caption'] = get_text(elem, 'media-caption')
-                    item['media']['image'].append(image)
+                    item['media']['images'].append(image)
 
                 elif elem.tag == 'media' and elem.get('media-type') == 'video':
                     video = elem.find('media-reference').attrib
                     video['media-caption'] = get_text(elem, 'media-caption')
-                    item['media']['video'].append(video)
+                    item['media']['videos'].append(video)
 
                 else:   # other tag are considered part of the body text and
                         # should be preserved.
