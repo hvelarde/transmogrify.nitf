@@ -41,7 +41,7 @@ class XMLSource(object):
                     # plone.app.dexterity.behaviours.metadata.IBasic
                     'title': None, 'description': None,
                     # plone.app.dexterity.behaviours.metadata.ICategorization
-                    'subject': [], 'language': '',
+                    'subjects': [], 'language': '',
                     # plone.app.dexterity.behaviours.metadata.IPublication
                     'effective': None, 'expires': None,
                     # plone.app.dexterity.behaviours.metadata.IOwnership
@@ -66,7 +66,7 @@ class XMLSource(object):
 
             item['_path'] = get_text(head, 'docdata/doc-id', 'id-string').lower()
             item['title'] = get_text(head, 'title')
-            item['subject'] = [k.get('key') for k in \
+            item['subjects'] = [k.get('key') for k in \
                             list(head.find('docdata/key-list')) if k.get('key')]
             #item['language']
             sdate = get_text(head, 'docdata/date.release', 'norm')
