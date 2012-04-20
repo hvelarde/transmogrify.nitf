@@ -6,10 +6,6 @@ from zope.interface import classProvides, implements
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
 
-#from collective.nitf.content import genre_default_value
-#from collective.nitf.content import section_default_value
-#from collective.nitf.content import urgency_default_value
-
 
 def get_text(dom, subelemet, attribute=None):
     """ Return the text value for a node xor a attribute value from that node.
