@@ -52,8 +52,7 @@ class XMLSource(object):
                     'section': '', 'urgency': '', 'location': '',
                     # objects that should be created inside of the current
                     # NITF object.
-                    '_media': {'images': [],
-                              'videos': []}
+                    '_media': [],
                     }
 
             dom = etree.fromstring(data)
@@ -88,15 +87,16 @@ class XMLSource(object):
             item['byline'] = get_text(body, 'body.head/byline/person')
 
             for elem in list(body.find('body.content')):
-                if elem.tag == 'media' and elem.get('media-type') == 'image':
-                    image = elem.find('media-reference').attrib
-                    image['media-caption'] = get_text(elem, 'media-caption')
-                    item['_media']['images'].append(image)
-
-                elif elem.tag == 'media' and elem.get('media-type') == 'video':
-                    video = elem.find('media-reference').attrib
-                    video['media-caption'] = get_text(elem, 'media-caption')
-                    item['_media']['videos'].append(video)
+                if elem.tag == 'media':
+                    # media-type video list of attributes:
+                    #   media-type, source, alternate-text.
+                    # media-type image list of attributes:
+                    #   mime-type, source, alternate-text, height, width.
+                    #
+                    media = elem.find('media-reference').attrib
+                    media['media-type'] = get_text(elem, 'media-type')
+                    media['media-caption'] = get_text(elem, 'media-caption')
+                    item['_media'].append(media)
 
                 else:   # other tag are considered part of the body text and
                         # should be preserved.
