@@ -24,7 +24,7 @@ class DirectorySource(object):
         """
         self.previous = previous
         self.directory = resolvePackageReferenceOrFile(options['directory'])
-        self.suffix = ".{0}".format(options['suffix'].split())
+        self.suffix = ".{0}".format(options['suffix'].strip())
 
     def __iter__(self):
         for item in self.previous:
@@ -34,4 +34,5 @@ class DirectorySource(object):
             if filename.endswith(self.suffix):
                 filepath = os.path.join(self.directory, filename)
                 with open(filepath, 'r') as item:
+
                     yield item.read()
