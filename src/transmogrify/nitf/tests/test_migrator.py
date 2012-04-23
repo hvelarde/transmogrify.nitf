@@ -11,7 +11,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 
 from Products.CMFPlone.utils import getToolByName
 
-from collective.nitf.testing import INTEGRATION_TESTING
+from transmogrify.nitf.testing import INTEGRATION_TESTING
 
 
 def populateContainer(self, container, default_type='News Item', limit=4):
@@ -30,7 +30,7 @@ def populateContainer(self, container, default_type='News Item', limit=4):
             if random.choice([True, False]):
                 container[n_id].setImage(StringIO(zptlogo))
                 container[n_id].setImageCaption(u'Zope LOGO %s' % str(n + 1))
-        if default_type == 'collective.nitf.content':
+        if default_type == 'transmogrify.nitf.content':
             container[n_id].body = RichTextValue(u'<p>News %s</p>' % str(n + 1),
                                     'text/html', 'text/x-html-safe')
             #logger.debug(u"Populating: %s %s %s" % (default_type, n_id, container[n_id].objectIds()))
@@ -48,13 +48,13 @@ class MigrationTest(unittest.TestCase):
         catalog = getToolByName(self.portal, 'portal_catalog')
         results = catalog(portal_type='News Item')
         self.assertEqual(len(results), 4)
-        results = catalog(portal_type='collective.nitf.content')
+        results = catalog(portal_type='transmogrify.nitf.content')
         self.assertEqual(len(results), 0)
 
         transmogrifier = Transmogrifier(self.portal)
         transmogrifier("nitfmigrator")
 
-        results = catalog({'portal_type': u'collective.nitf.content', }, )
+        results = catalog({'portal_type': u'transmogrify.nitf.content', }, )
         self.assertEqual(len(results), 4)
 
     def test_migrate_dry_run(self):

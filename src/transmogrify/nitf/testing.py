@@ -13,7 +13,9 @@ class Fixture(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         # Load ZCML
         import collective.nitf
+        import transmogrify.nitf
         self.loadZCML(package=collective.nitf)
+        self.loadZCML(package=transmogrify.nitf)
 
     def setUpPloneSite(self, portal):
         # Install into Plone site using portal_setup
@@ -23,9 +25,9 @@ class Fixture(PloneSandboxLayer):
 FIXTURE = Fixture()
 INTEGRATION_TESTING = IntegrationTesting(
     bases=(FIXTURE,),
-    name='collective.nitf:Integration',
+    name='transmogrify.nitf:Integration',
     )
 FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(FIXTURE,),
-    name='collective.nitf:Functional',
+    name='transmogrify.nitf:Functional',
     )

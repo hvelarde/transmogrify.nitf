@@ -31,9 +31,11 @@ setup(name='transmogrify.nitf',
       zip_safe=False,
       install_requires=[
         'setuptools',
+        'isodate',
         'collective.nitf',
         'collective.transmogrifier',
         'plone.app.transmogrifier',
+        'transmogrify.dexterity',
         ],
       extras_require={
         'test': ['plone.app.testing'],
