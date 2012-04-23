@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
-from isodate import parse_datetime
+import logging
+import urlparse
 import xml.etree.ElementTree as etree
+from isodate import parse_datetime
+from urllib2 import urlopen, URLError
 
 from zope.interface import classProvides, implements
 from collective.transmogrifier.interfaces import ISection
 from collective.transmogrifier.interfaces import ISectionBlueprint
+from collective.transmogrifier.utils import resolvePackageReferenceOrFile
 
 
 def get_text(dom, subelemet, attribute=None):
@@ -29,6 +33,12 @@ class XMLSource(object):
 
     def __init__(self, transmogrifier, name, options, previous):
         self.previous = previous
+        if 'directory' in options:
+            self.directory = resolvePackageReferenceOrFile(options['directory'])
+        else:
+            self.directory = None
+
+        self.logger = logging.getLogger(name)
 
     def __iter__(self):
         for data in self.previous:
@@ -50,9 +60,6 @@ class XMLSource(object):
                     # collective.nitf.content.INITF
                     'subtitle': '', 'byline': '', 'text': '', 'genre': '',
                     'section': '', 'urgency': '', 'location': '',
-                    # objects that should be created inside of the current
-                    # NITF object.
-                    '_media': [],
                     }
 
             dom = etree.fromstring(data)
@@ -86,20 +93,71 @@ class XMLSource(object):
             item['subtitle'] = get_text(body, 'body.head/hedline/hl2')
             item['byline'] = get_text(body, 'body.head/byline/person')
 
+            # the list items to yield, this include nitf objects,
+            # atimages objects and video references.
+            media_items = []
             for elem in list(body.find('body.content')):
-                if elem.tag == 'media':
-                    # media-type video list of attributes:
-                    #   media-type, source, alternate-text.
+                if elem.tag == 'media' and elem.get('media-type') == 'image':
                     # media-type image list of attributes:
-                    #   mime-type, source, alternate-text, height, width.
-                    #
-                    media = elem.find('media-reference').attrib
-                    media['media-type'] = get_text(elem, 'media-type')
-                    media['media-caption'] = get_text(elem, 'media-caption')
-                    item['_media'].append(media)
+                    # - mime-type, source, alternate-text, height, width.
+                    image = {'_path': None,
+                             '_type': 'Image',
+                             'title': None,
+                             'description': None,
+                             'image': None,
+                             '_data': None,
+                             '_mimetype': None,
+                             }
+
+                    media = elem.find('media-reference')
+                    src = media.get('source', None)
+                    path = media.get('alternate-text', None)
+                    image['_mimetype'] = media.get('mime-type')
+                    image['_description'] = get_text(elem, 'media-caption')
+
+                    if None in (src, path, image['_mimetype']):
+                        self.logger.debug(
+                            "item path: {0}, incomplete data image src: {1}"
+                             .format(item['_path']), path)
+                        continue
+
+                    if self.directory is not None:
+                    # We ned to change the url schema to retrive the file from
+                    # the filesystem and insert the source directory path.
+                        url = urlparse.urlparse(src)
+                        sdir = urlparse.urlparse(self.directory)
+                        src = urlparse.urlunsplit(('file',
+                                "{0}/{1}".format(sdir.path, url.netloc),
+                                url.path, url.query, url.fragment))
+
+                    try:
+                        fd = urlopen(src)
+                    except URLError:
+                        self.logger.debug(
+                            "item path: {0}, can't retrieve image from url: {1}"
+                             .format(item['_path']), src)
+                        continue
+
+                    image['_data'] = fd.read()
+                    fd.close()
+                    image['_path'] = "{0}/{1}".format(item['_path'], path)
+                    # HACK: This is to support folder archive based on they
+                    # effective date.
+                    image['effective'] = item['effective']
+
+                    media_items.append(image)
+
+                elif elem.tag == 'media' and elem.get('media-type') == 'video':
+                    # media-type video list of attributes:
+                    # - media-type, source, alternate-text.
+                    video = {}
 
                 else:   # other tag are considered part of the body text and
                         # should be preserved.
                     item['text'] += etree.tostring(elem)
 
+            # First we need create the nitf object
             yield item
+            # Media items should be created after the ntif object
+            for media_item in media_items:
+                yield media_item
