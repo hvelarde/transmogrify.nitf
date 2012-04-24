@@ -52,7 +52,7 @@ class XMLSource(object):
                     'effective': None, 'expires': None,
                     # plone.app.dexterity.behaviours.metadata.IOwnership
                     'creators': [], 'contributors': [], 'rights': None,
-                    # TODO: How the standar manage refenreces and related items.
+                    # TODO: How the standar manage refenreces and related items?.
                     # plone.app.referenceablebehavior.referenceable.IReferenceable
                     #'_plone.uuid': '',
                     # plone.app.relationfield.behavior.IRelatedItems
@@ -79,6 +79,7 @@ class XMLSource(object):
             if sdate:
                 item['expires'] = parse_datetime(sdate)
 
+            # This field is not implemented in the collective.nitf
             #sdate = get_text(head, 'docdata/date.issue', 'norm')
             #if sdate:
             #    item['issue'] = parse_datetime(sdate)
@@ -93,8 +94,8 @@ class XMLSource(object):
             item['subtitle'] = get_text(body, 'body.head/hedline/hl2')
             item['byline'] = get_text(body, 'body.head/byline/person')
 
-            # the list items to yield, this include nitf objects,
-            # atimages objects and video references.
+            # The list of media items to yield, like atimages objects and video
+            # references.
             media_items = []
             for elem in list(body.find('body.content')):
                 if elem.tag == 'media' and elem.get('media-type') == 'image':
@@ -123,8 +124,8 @@ class XMLSource(object):
                         continue
 
                     if self.directory is not None:
-                    # We ned to change the url schema to retrive the file from
-                    # the filesystem and insert the source directory path.
+                    # Change the url schema to retrive the file from the
+                    # filesystem and insert the source directory path.
                         url = urlparse.urlparse(src)
                         sdir = urlparse.urlparse(self.directory)
                         src = urlparse.urlunsplit(('file',
@@ -142,23 +143,24 @@ class XMLSource(object):
                     image['_data'] = fd.read()
                     fd.close()
                     image['_path'] = "{0}/{1}".format(item['_path'], path)
-                    # HACK: This is to support folder archive based on they
-                    # effective date.
+                    # HACK: This is to support folder archive based on the
+                    # effective date (original publication date).
                     image['effective'] = item['effective']
 
                     media_items.append(image)
 
                 elif elem.tag == 'media' and elem.get('media-type') == 'video':
+                    # TODO: manage video refenrence.
                     # media-type video list of attributes:
                     # - media-type, source, alternate-text.
                     video = {}
-
+                    # media_items.append(video)
                 else:   # other tag are considered part of the body text and
                         # should be preserved.
                     item['text'] += etree.tostring(elem)
 
             # First we need create the nitf object
             yield item
-            # Media items should be created after the ntif object
+            # Media items should be created after the nitf object.
             for media_item in media_items:
                 yield media_item
