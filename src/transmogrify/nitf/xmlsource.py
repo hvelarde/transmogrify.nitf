@@ -112,8 +112,9 @@ class XMLSource(object):
                     media = elem.find('media-reference')
                     src = media.get('source', None)
                     path = media.get('alternate-text', None)
+                    image['title'] = media.get('alternate-text', None)
                     image['_mimetype'] = media.get('mime-type')
-                    image['_description'] = get_text(elem, 'media-caption')
+                    image['description'] = get_text(elem, 'media-caption')
 
                     if None in (src, path, image['_mimetype']):
                         self.logger.debug(
