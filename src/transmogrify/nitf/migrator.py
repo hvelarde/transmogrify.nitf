@@ -42,7 +42,7 @@ class NITFTransformView(grok.View):
 
     def transmogrify(self, context):
         self.transmogrifier = Transmogrifier(context)
-        self.transmogrifier("nitfmigrator")
+        self.transmogrifier("nitfxmlimport")
 
 
 class NewsItemSource(object):
