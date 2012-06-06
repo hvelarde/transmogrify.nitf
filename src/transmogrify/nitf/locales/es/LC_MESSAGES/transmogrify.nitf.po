@@ -1,0 +1,36 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2012-06-06 03:46+0000\n"
+"PO-Revision-Date: 2012-06-06 00:40 +3000\n"
+"Last-Translator: Juan A. Diaz <nueces@ravvit.net>\n"
+"Language-Team: Spanish: <http://github.com/collective>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: transmogrify.nitf\n"
+
+#: ./browser.py:84
+msgid "Invalid pipeline"
+msgstr "Conjunto de acciones invalido"
+
+#: ./browser.py:39
+msgid "Pipelines"
+msgstr "Conjunto de acciones"
+
+#: ./browser.py:40
+msgid "Select a transmogrifier pipelie to run."
+msgstr "Seleccione un conjunto de acciones de transformación para ejecutar"
+
+#: ./browser.py:55
+msgid "Transmogrifiers"
+msgstr "Transmogrifiers"
+
+#: ./browser.py:79
+msgid "successfully executed."
+msgstr "ejecutado correctamente."
+
