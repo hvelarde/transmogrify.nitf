@@ -9,14 +9,14 @@
   <grok:grok package="." />
 
   <transmogrifier:registerConfig
-     name="nitfmigrator"
+     name="nitf-migrator"
      title="Converts standard News Items into NITF objects"
      description="Converts standard News Items into NITF objects"
      configuration="migrator.cfg"
      />
 
   <transmogrifier:registerConfig
-     name="nitfxmlimport"
+     name="nitf-xmlimport"
      title="Import XML files into NITF objects"
      description="Create NITF objects from XML files"
      configuration="xmlimport.cfg"
