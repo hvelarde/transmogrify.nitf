@@ -137,7 +137,7 @@ class XMLSource(object):
                     except URLError:
                         self.logger.debug(
                             "item path: {0}, can't retrieve image from url: {1}"
-                             .format(item['_path']), src)
+                             .format(item['_path'], src))
                         continue
 
                     image['_data'] = fd.read()
