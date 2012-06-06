@@ -8,4 +8,5 @@ develop-eggs/
 downloads/
 eggs/
 parts/
+src/collective.nitf
 var/
