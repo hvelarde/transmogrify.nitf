@@ -1,0 +1,11 @@
+Share and Enjoy
+---------------
+
+transmogrify.nitf would not have been possible without the contribution of the
+following people:
+
+- Héctor Velarde
+- Juan A. Díaz
+
+Development sponsored by Open Multimedia.
+
