@@ -3,10 +3,8 @@
 import pprint
 import zope.event
 
-from five import grok
 from plone.app.textfield.value import RichTextValue
 from plone.uuid.interfaces import IMutableUUID
-from zope.component import queryMultiAdapter
 from zope.interface import classProvides
 from zope.interface import implements
 from zope.lifecycleevent import ObjectCreatedEvent
@@ -15,34 +13,15 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from Products.Archetypes.Field import Image
 from Products.Archetypes.Schema import getNames
 from Products.ATContentTypes.interfaces import IATNewsItem
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFPlone.utils import _createObjectByType
 from Products.CMFPlone.utils import getToolByName
 
 from collective.transmogrifier.interfaces import ISection, ISectionBlueprint
-from collective.transmogrifier.transmogrifier import Transmogrifier
 
 from collective.nitf.content import INITF
 from collective.nitf.content import genre_default_value
 from collective.nitf.content import section_default_value
 from collective.nitf.content import urgency_default_value
-
-
-class NITFTransformView(grok.View):
-    grok.context(IPloneSiteRoot)
-    grok.name('nitf-migrator')
-
-    def render(self):
-        portal_state = queryMultiAdapter((self.context, self.request),
-                                         name=u'plone_portal_state')
-        portal = portal_state.portal()
-        self.transmogrify(portal)
-
-        return 'Migration finished...'
-
-    def transmogrify(self, context):
-        self.transmogrifier = Transmogrifier(context)
-        self.transmogrifier("nitfxmlimport")
 
 
 class NewsItemSource(object):
